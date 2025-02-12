@@ -74,7 +74,7 @@ function App() {
   const totalPoints = students.reduce((sum, student) => sum + student.points, 0);
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8 px-4">
+    <div className="min-h-screen bg-gray-50 py-8 px-4 overflow-x-auto">
       <div className="max-w-4xl mx-auto">
         <h1 className="text-3xl font-bold text-gray-900 mb-8 text-center">
           Student Management
