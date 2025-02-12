@@ -1,12 +1,19 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { PlusCircle, MinusCircle, Trash2 } from 'lucide-react';
 import type { Student } from './types';
 
 function App() {
-  const [students, setStudents] = useState<Student[]>([]);
+  const [students, setStudents] = useState<Student[]>(() => {
+    const savedStudents = localStorage.getItem('students');
+    return savedStudents ? JSON.parse(savedStudents) : [];
+  });
   const [newStudentName, setNewStudentName] = useState('');
   const [showError, setShowError] = useState(false);
   const [confirmingPayment, setConfirmingPayment] = useState<string | null>(null);
+
+  useEffect(() => {
+    localStorage.setItem('students', JSON.stringify(students));
+  }, [students]);
 
   const addStudent = (e: React.FormEvent) => {
     e.preventDefault();
