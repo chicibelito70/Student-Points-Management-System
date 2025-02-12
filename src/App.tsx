@@ -74,7 +74,7 @@ function App() {
         </h1>
 
         {/* Payment Status Overview */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 mb-8">
           <div className="bg-white p-4 rounded-lg shadow">
             <h3 className="text-sm font-medium text-gray-500">Total Students</h3>
             <p className="text-2xl font-bold text-gray-900">{totalStudents}</p>
@@ -125,7 +125,7 @@ function App() {
         </form>
 
         {/* Student List */}
-        <div className="bg-white rounded-lg shadow overflow-hidden">
+        <div className="bg-white rounded-lg shadow overflow-x-auto">
           <table className="min-w-full divide-y divide-gray-200">
             <thead className="bg-gray-50">
               <tr>
