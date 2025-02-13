@@ -10,10 +10,18 @@ function App() {
   const [newStudentName, setNewStudentName] = useState('');
   const [showError, setShowError] = useState(false);
   const [confirmingPayment, setConfirmingPayment] = useState<string | null>(null);
+  const [totalPoints, setTotalPoints] = useState(() => {
+    const savedTotalPoints = localStorage.getItem('totalPoints');
+    return savedTotalPoints ? JSON.parse(savedTotalPoints) : 0;
+  });
 
   useEffect(() => {
     localStorage.setItem('students', JSON.stringify(students));
   }, [students]);
+
+  useEffect(() => {
+    localStorage.setItem('totalPoints', JSON.stringify(totalPoints));
+  }, [totalPoints]);
 
   const addStudent = (e: React.FormEvent) => {
     e.preventDefault();
@@ -39,7 +47,8 @@ function App() {
       student.id === studentId 
         ? { ...student, points: student.points + 25 }
         : student
-    ));
+     ));
+    setTotalPoints(totalPoints + 25);
   };
 
   const removePoints = (studentId: string) => {
@@ -47,7 +56,8 @@ function App() {
       student.id === studentId && student.points >= 25
         ? { ...student, points: student.points - 25 }
         : student
-    ));
+     ));
+    setTotalPoints(totalPoints - 25);
   };
 
   const togglePaid = (studentId: string) => {
@@ -67,11 +77,14 @@ function App() {
     setStudents(students.filter(student => student.id !== studentId));
   };
 
+  const resetTotalPoints = () => {
+    setTotalPoints(0);
+  };
+
   // Calculate payment statistics
   const totalStudents = students.length;
   const paidStudents = students.filter(s => s.paid).length;
   const pendingStudents = totalStudents - paidStudents;
-  const totalPoints = students.reduce((sum, student) => sum + student.points, 0);
 
   return (
     <div className="min-h-screen bg-gray-50 py-8 px-4 overflow-x-auto">
@@ -100,36 +113,46 @@ function App() {
           </div>
         </div>
 
-        {/* Form to add students */}
-        <form onSubmit={addStudent} className="mb-8">
-          <div className="flex flex-col gap-2">
-            <div className="relative">
-              <input
-                type="text"
-                value={newStudentName}
-                onChange={(e) => {
-                  setNewStudentName(e.target.value);
-                  if (showError) setShowError(false);
-                }}
-                placeholder="Student name"
-                className={`w-full rounded-lg border ${
-                  showError ? 'border-red-500' : 'border-gray-300'
-                } shadow-sm focus:border-blue-500 focus:ring-blue-500 p-2`}
-              />
-              {showError && (
-                <p className="absolute text-sm text-red-600 mt-1">
-                  Please enter the student's name
-                </p>
-              )}
+        {/* Form to add students and reset total points */}
+        <div className="flex gap-4 mb-8">
+          <form onSubmit={addStudent} className="flex-1">
+            <div className="flex flex-col gap-2">
+              <div className="relative">
+                <input
+                  type="text"
+                  value={newStudentName}
+                  onChange={(e) => {
+                    setNewStudentName(e.target.value);
+                    if (showError) setShowError(false);
+                  }}
+                  placeholder="Student name"
+                  className={`w-full rounded-lg border ${
+                    showError ? 'border-red-500' : 'border-gray-300'
+                  } shadow-sm focus:border-blue-500 focus:ring-blue-500 p-2`}
+                />
+                {showError && (
+                  <p className="absolute text-sm text-red-600 mt-1">
+                    Please enter the student's name
+                  </p>
+                )}
+              </div>
+              <button
+                type="submit"
+                className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors w-full"
+              >
+                Add Student
+              </button>
             </div>
+          </form>
+          <div className="flex flex-col justify-end">
             <button
-              type="submit"
-              className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors"
+              onClick={resetTotalPoints}
+              className="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition-colors w-full"
             >
-              Add Student
+              Reset Total Points
             </button>
           </div>
-        </form>
+        </div>
 
         {/* Student List */}
         <div className="bg-white rounded-lg shadow overflow-x-auto">
