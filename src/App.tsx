@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { PlusCircle, MinusCircle, Trash2 } from 'lucide-react';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import type { Student } from './types';
 
 function App() {
@@ -74,7 +76,12 @@ function App() {
   };
 
   const deleteStudent = (studentId: string) => {
-    setStudents(students.filter(student => student.id !== studentId));
+    const student = students.find(student => student.id === studentId);
+    if (student && student.paid) {
+      setStudents(students.filter(student => student.id !== studentId));
+    } else {
+      toast.error("Student must be marked as balance before deleting.");
+    }
   };
 
   const resetTotalPoints = () => {
@@ -253,6 +260,7 @@ function App() {
           </table>
         </div>
       </div>
+      <ToastContainer />
     </div>
   );
 }
